@@ -73,7 +73,10 @@ function App() {
 
   return (
     <Form {...myForm}>
-      <form onSubmit={myForm.handleSubmit(onSubmit)} className="space-y-8">
+      <form
+        onSubmit={myForm.handleSubmit(onSubmit)}
+        className="space-y-8 max-w-[460px] mx-auto"
+      >
         <FormField
           control={myForm.control}
           name="username"
@@ -81,19 +84,24 @@ function App() {
             <FormItem>
               <FormLabel>Username</FormLabel>
               <FormControl>
-                <Input placeholder="username" {...field} />
+                <Input
+                  placeholder="username"
+                  className="text-black"
+                  {...field}
+                />
               </FormControl>
-              <FormDescription>
+              {/* <FormDescription>
                 This is your public display name.
-              </FormDescription>
+              </FormDescription> */}
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="button" onClick={handleAddFruit}>
+        <Button type="button" onClick={handleAddFruit} className="block mb-2">
           Add Fruit
         </Button>
+
         {/*
          6. We loop the fields array to render the dynamic fields
             key={field.id} => use field.id as key
@@ -102,9 +110,10 @@ function App() {
             7. Also, we use removeFruit(index) to remove the field
             
             */}
+        {fields.length === 0 && <p>No fruits! You can add one!</p>}
         {fields.map((field, index) => {
           return (
-            <div key={field.id} className="flex gap-1">
+            <div key={field.id} className="flex gap-1 items-center">
               <FormField
                 control={myForm.control}
                 name={`fruits.${index}.name`}
@@ -112,7 +121,11 @@ function App() {
                   <FormItem>
                     <FormLabel>Fruit Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="fruit name" {...field} />
+                      <Input
+                        placeholder="fruit name"
+                        className="text-black"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -125,7 +138,11 @@ function App() {
                   <FormItem>
                     <FormLabel>Quantity</FormLabel>
                     <FormControl>
-                      <Input placeholder="quantity" {...field} />
+                      <Input
+                        placeholder="quantity"
+                        className="text-black"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

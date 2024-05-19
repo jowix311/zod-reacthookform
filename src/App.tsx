@@ -16,14 +16,14 @@ import "./App.css";
 
 import { z } from "zod";
 
-import { useFieldArray, useForm } from "react-hook-form";
+import { FieldError, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
+  // FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -71,6 +71,13 @@ function App() {
     appendFruit({ name: "", quantity: "" });
   }; //5. Create a function to add a new fruit field
 
+  // console.log("validation messages", myForm.formState.errors); //keeping this as reference
+
+  const createListItem = (message: string) => {
+    if (!message) return null;
+    return <li>{message}</li>;
+  };
+
   return (
     <Form {...myForm}>
       <form
@@ -113,45 +120,61 @@ function App() {
         {fields.length === 0 && <p>No fruits! You can add one!</p>}
         {fields.map((field, index) => {
           return (
-            <div key={field.id} className="flex gap-1 items-center">
-              <FormField
-                control={myForm.control}
-                name={`fruits.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Fruit Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="fruit name"
-                        className="text-black"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={myForm.control}
-                name={`fruits.${index}.quantity`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="quantity"
-                        className="text-black"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="button" onClick={() => removeFruit(index)}>
-                Remove Fruit
-              </Button>
-            </div>
+            <>
+              <div key={field.id} className="flex gap-1 items-center">
+                <FormField
+                  control={myForm.control}
+                  name={`fruits.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fruit Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="fruit name"
+                          className="text-black"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={myForm.control}
+                  name={`fruits.${index}.quantity`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="quantity"
+                          className="text-black"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="button" onClick={() => removeFruit(index)}>
+                  Remove Fruit
+                </Button>
+              </div>
+              <div>
+                <p>Showing all errors: (This is a POC)</p>
+                {/* Fix on type error https://github.com/react-hook-form/react-hook-form/issues/987 */}
+                {myForm.formState?.errors?.fruits?.[index] &&
+                  Object.entries(
+                    myForm.formState?.errors?.fruits?.[index] || {}
+                  ).map(([type, message]) => (
+                    <p key={type}>
+                      {typeof message === "object"
+                        ? String((message as unknown as FieldError)?.message)
+                        : String(message)}
+                    </p>
+                  ))}
+              </div>
+            </>
           );
         })}
 
